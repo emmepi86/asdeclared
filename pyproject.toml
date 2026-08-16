@@ -1,4 +1,3 @@
-# DRAFT — name and licence are placeholders pending Max's decision.
 [build-system]
 requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
@@ -21,6 +20,10 @@ classifiers = [
 ]
 # The whole point: nothing here.
 dependencies = []
+
+[project.urls]
+Homepage = "https://aosol.cloud"
+Repository = "https://github.com/emmepi86/asdeclared"
 
 [project.scripts]
 asdeclared = "asdeclared.cli:main"

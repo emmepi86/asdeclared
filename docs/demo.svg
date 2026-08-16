@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 430" width="760" height="430" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+  <style>
+    .bg    { fill: #0d1117; }
+    .chrome{ fill: #161b22; }
+    .dot1  { fill: #ff5f57; } .dot2 { fill: #febc2e; } .dot3 { fill: #28c840; }
+    text   { font-size: 13px; }
+    .dim   { fill: #6e7681; }
+    .cmd   { fill: #58a6ff; }
+    .flag  { fill: #79c0ff; }
+    .ok    { fill: #3fb950; }
+    .out   { fill: #c9d1d9; }
+    .warn  { fill: #d29922; }
+    .bad   { fill: #f85149; }
+    .key   { fill: #d2a8ff; }
+    .str   { fill: #a5d6ff; }
+    .title { fill: #8b949e; font-size: 11px; letter-spacing: .08em; }
+
+    /* 4 screens, 20s loop, 5s each. */
+    .step { opacity: 0; animation: show 20s infinite; }
+    .s1 { animation-delay:  0s; }
+    .s2 { animation-delay:  5s; }
+    .s3 { animation-delay: 10s; }
+    .s4 { animation-delay: 15s; }
+    @keyframes show {
+      0%   { opacity: 0 }
+      2%   { opacity: 1 }
+      23%  { opacity: 1 }
+      25%  { opacity: 0 }
+      100% { opacity: 0 }
+    }
+    .caret { animation: blink 1.05s steps(1) infinite; }
+    @keyframes blink { 50% { opacity: 0 } }
+  </style>
+
+  <rect class="bg" width="760" height="430" rx="10"/>
+  <rect class="chrome" width="760" height="34" rx="10"/>
+  <rect class="chrome" y="24" width="760" height="10"/>
+  <circle class="dot1" cx="22" cy="17" r="6"/>
+  <circle class="dot2" cx="42" cy="17" r="6"/>
+  <circle class="dot3" cx="62" cy="17" r="6"/>
+  <text class="title" x="380" y="21" text-anchor="middle">asdeclared — is the system still as declared?</text>
+
+  <!-- ============ screen 1: declare ============ -->
+  <g class="step s1">
+    <text class="title" x="30" y="60">1 / 4 · DECLARE — declared.json says what must stay true</text>
+    <text x="30" y="92"><tspan class="dim">$</tspan> <tspan class="cmd">cat</tspan> <tspan class="out">declared.json</tspan></text>
+    <text x="30" y="118"><tspan class="out">{ </tspan><tspan class="key">"authoritative_writers"</tspan><tspan class="out">: [{</tspan></text>
+    <text x="52" y="140"><tspan class="key">"table"</tspan><tspan class="out">: </tspan><tspan class="str">"orders"</tspan><tspan class="out">,</tspan></text>
+    <text x="52" y="162"><tspan class="key">"declared_writers"</tspan><tspan class="out">: [</tspan><tspan class="str">"services/order_writer.py"</tspan><tspan class="out">],</tspan></text>
+    <text x="52" y="184"><tspan class="key">"rationale"</tspan><tspan class="out">: </tspan><tspan class="str">"single writer since the double-writer incident"</tspan></text>
+    <text x="30" y="206"><tspan class="out">  }],</tspan></text>
+    <text x="30" y="228"><tspan class="key">  "caller_transactional_modules"</tspan><tspan class="out">: [{</tspan><tspan class="key">"path"</tspan><tspan class="out">: </tspan><tspan class="str">"services/writer.py"</tspan><tspan class="out">, ...}],</tspan></text>
+    <text x="30" y="250"><tspan class="key">  "paired_entrypoints"</tspan><tspan class="out">: [...], </tspan><tspan class="key">"critical_files"</tspan><tspan class="out">: [...],</tspan></text>
+    <text x="30" y="272"><tspan class="key">  "migration_directory"</tspan><tspan class="out">: </tspan><tspan class="str">"migrations"</tspan><tspan class="out"> }</tspan></text>
+    <text x="30" y="318" class="dim">Every entry has a stable id and a human rationale —</text>
+    <text x="30" y="340" class="dim">six months from now, the rationale is why the guard exists.</text>
+    <text x="30" y="386"><tspan class="dim">$</tspan> <tspan class="caret out">▌</tspan></text>
+  </g>
+
+  <!-- ============ screen 2: run ============ -->
+  <g class="step s2">
+    <text class="title" x="30" y="60">2 / 4 · CHECK — one command, five checks, read-only</text>
+    <text x="30" y="92"><tspan class="dim">$</tspan> <tspan class="cmd">asdeclared</tspan> <tspan class="flag">--repo</tspan> <tspan class="out">.</tspan> <tspan class="flag">--config</tspan> <tspan class="out">declared.json</tspan> <tspan class="flag">--out</tspan> <tspan class="out">status.json</tspan> \</text>
+    <text x="126" y="114"><tspan class="flag">--deployment-root</tspan> <tspan class="out">/srv/deploy/current</tspan> \</text>
+    <text x="126" y="136"><tspan class="flag">--migration-ledger-json</tspan> <tspan class="out">ledger.json</tspan></text>
+    <text x="30" y="176"><tspan class="ok">pass=7</tspan><tspan class="out">  </tspan><tspan class="bad">fail=2</tspan><tspan class="out">  not_checked=0  blocking=2</tspan></text>
+    <text x="30" y="198"><tspan class="out">report written to status.json</tspan></text>
+    <text x="30" y="240"><tspan class="dim">exit code </tspan><tspan class="bad">2</tspan><tspan class="dim"> — violations. 0 = clean, 1 = config error.</tspan></text>
+    <text x="30" y="286" class="dim">Deterministic: two identical runs are byte-identical.</text>
+    <text x="30" y="308" class="dim">Omitted inputs report not_checked — never pass.</text>
+    <text x="30" y="386"><tspan class="dim">$</tspan> <tspan class="caret out">▌</tspan></text>
+  </g>
+
+  <!-- ============ screen 3: the drift ============ -->
+  <g class="step s3">
+    <text class="title" x="30" y="60">3 / 4 · THE DRIFT — every finding carries file and line</text>
+    <text x="30" y="92"><tspan class="dim">$</tspan> <tspan class="cmd">jq</tspan> <tspan class="str">'.results[] | select(.status=="fail")'</tspan> <tspan class="out">status.json</tspan></text>
+    <text x="30" y="126"><tspan class="bad">✗ competing_writer_discovery</tspan><tspan class="out"> · orders</tspan></text>
+    <text x="52" y="148"><tspan class="out">undeclared write at </tspan><tspan class="warn">services/reporting/export.py:141</tspan></text>
+    <text x="52" y="170"><tspan class="dim">"UPDATE orders SET ..." — added in good faith,</tspan></text>
+    <text x="52" y="192"><tspan class="dim">by someone who never found the declared writer.</tspan></text>
+    <text x="30" y="228"><tspan class="bad">✗ migration_inventory_parity</tspan></text>
+    <text x="52" y="250"><tspan class="out">digest_mismatch: </tspan><tspan class="warn">004_add_audit.sql</tspan></text>
+    <text x="52" y="272"><tspan class="dim">edited AFTER being applied — the repo no longer</tspan></text>
+    <text x="52" y="294"><tspan class="dim">describes the schema that actually ran.</tspan></text>
+    <text x="30" y="340" class="dim">Invisible to unit tests, linters and review: each lives in the</text>
+    <text x="30" y="362" class="dim">gap between things that are individually correct.</text>
+    <text x="30" y="392"><tspan class="dim">$</tspan> <tspan class="caret out">▌</tspan></text>
+  </g>
+
+  <!-- ============ screen 4: tracelink ============ -->
+  <g class="step s4">
+    <text class="title" x="30" y="60">4 / 4 · REMEMBER — violations become TraceLink findings</text>
+    <text x="30" y="92"><tspan class="dim">$</tspan> <tspan class="cmd">asdeclared-tracelink</tspan> <tspan class="flag">--status</tspan> <tspan class="out">status.json</tspan> <tspan class="out">&gt;&gt; FINDINGS.md</tspan></text>
+    <text x="30" y="126"><tspan class="out">## </tspan><tspan class="key">ARCH-AW-ORDERS</tspan><tspan class="out"> — competing_writer_discovery [</tspan><tspan class="warn">MEDIUM</tspan><tspan class="out">]</tspan></text>
+    <text x="30" y="148"><tspan class="out">- undeclared write at </tspan><tspan class="str">`services/reporting/export.py`</tspan><tspan class="out">:L141</tspan></text>
+    <text x="30" y="170"><tspan class="dim">Detected by `asdeclared/0.1.0` at commit `260533c`.</tspan></text>
+    <text x="30" y="212" class="dim">Stable ids: a violation that persists maps to the same note,</text>
+    <text x="30" y="234" class="dim">and its history accumulates in follow-ups — not duplicates.</text>
+    <text x="30" y="278"><tspan class="out">TraceLink links it to code, </tspan><tspan class="ok">both directions</tspan><tspan class="out">:</tspan></text>
+    <text x="30" y="300"><tspan class="dim">note → </tspan><tspan class="str">export.py:L141</tspan><tspan class="dim">   ·   symbol → </tspan><tspan class="str">[[ARCH-AW-ORDERS]]</tspan></text>
+    <text x="30" y="344" class="dim">The adapter never appends on its own: it emits, you decide.</text>
+    <text x="30" y="386"><tspan class="dim">$</tspan> <tspan class="caret out">▌</tspan></text>
+  </g>
+</svg>
