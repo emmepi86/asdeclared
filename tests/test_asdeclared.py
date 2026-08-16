@@ -323,3 +323,32 @@ class TestTracelinkAdapter:
         a = adapter.to_register_fragment(self.STATUS)
         b = adapter.to_register_fragment(self.STATUS)
         assert a == b
+
+
+class TestShippedExample:
+    """The thirty-second demo must not rot: it is the first thing a
+    visitor runs, and a broken first run is the last run."""
+
+    def test_demo_project_shows_exactly_the_advertised_drift(self, tmp_path):
+        base = Path(__file__).resolve().parents[1]
+        demo = base / "examples" / "demo-project"
+        out = tmp_path / "status.json"
+        proc = subprocess.run(
+            [sys.executable, "-m", "asdeclared",
+             "--repo", str(demo),
+             "--config", str(demo / "declared.json"),
+             "--migration-ledger-json", str(demo / "ledger.json"),
+             "--out", str(out)],
+            capture_output=True, text=True, timeout=120,
+            env={**__import__("os").environ,
+                 "PYTHONPATH": str(base / "src")})
+        assert proc.returncode == 2
+        data = json.loads(out.read_text())
+        by_id = {r["id"]: r for r in data["results"]}
+        assert by_id["tx-writer"]["status"] == "fail"
+        assert by_id["ep-ingest"]["evidence"]["retry_symbol"] == \
+            "does_NOT_call_authoritative"
+        assert by_id["aw-orders"]["undeclared_writers"][0]["path"] == \
+            "services/reporting/export.py"
+        assert by_id["migrations"]["digest_mismatch"] == ["001_init.sql"]
+        assert by_id["migrations"]["repo_only"] == ["002_region.sql"]

@@ -1,0 +1,3 @@
+[console_scripts]
+asdeclared = asdeclared.cli:main
+asdeclared-tracelink = asdeclared.tracelink:main

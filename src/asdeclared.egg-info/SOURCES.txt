@@ -1,0 +1,12 @@
+LICENSE
+README.md
+pyproject.toml
+src/asdeclared/__init__.py
+src/asdeclared/cli.py
+src/asdeclared/tracelink.py
+src/asdeclared.egg-info/PKG-INFO
+src/asdeclared.egg-info/SOURCES.txt
+src/asdeclared.egg-info/dependency_links.txt
+src/asdeclared.egg-info/entry_points.txt
+src/asdeclared.egg-info/top_level.txt
+tests/test_asdeclared.py

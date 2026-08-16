@@ -1,3 +1,21 @@
+Metadata-Version: 2.4
+Name: asdeclared
+Version: 0.1.0.dev0
+Summary: Config-driven, read-only guard against architecture drift: deployed bytes, transaction ownership, entrypoint parity, competing writers, migration ledger parity.
+Author: Massimiliano Paragnani
+License: Apache-2.0
+Project-URL: Homepage, https://aosol.cloud
+Project-URL: Repository, https://github.com/emmepi86/asdeclared
+Keywords: architecture,drift,static-analysis,migrations,deployment,ast
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Software Development :: Quality Assurance
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: license-file
+
 <h1 align="center">asdeclared</h1>
 
 <p align="center">
@@ -81,32 +99,14 @@ One CLI, five checks, all read-only:
 | `competing_writer_discovery` | `INSERT/UPDATE/DELETE` on declared surfaces from files outside the declared writer list — every match with file and line |
 | `migration_inventory_parity` | migrations in repo but not in the ledger, in the ledger but not in repo, or **edited after application** (digest mismatch) |
 
-## Try it in thirty seconds
-
-No install, no dependencies — the repository ships a miniature project
-whose architecture has drifted in four of the five ways:
-
-```console
-$ PYTHONPATH=src python3 -m asdeclared \
-    --repo examples/demo-project \
-    --config examples/demo-project/declared.json \
-    --migration-ledger-json examples/demo-project/ledger.json \
-    --out /tmp/status.json
-pass=0  fail=4  not_checked=0  blocking=3
-```
-
-The status file names every drift with file and line: the module that
-commits a transaction it does not own, the retry stuck on `parse_v1`,
-the undeclared `UPDATE orders` in a reporting script, and a migration
-whose bytes no longer match what was applied.
-
-On your own project, after `pip install`:
+## Try it
 
 ```console
 $ asdeclared --repo . --config declared.json --out status.json \
     --deployment-root /srv/deploy/current \
     --migration-ledger-json ledger.json
 pass=7  fail=2  not_checked=0  blocking=2
+report written to status.json
 ```
 
 Exit codes: `0` clean · `1` config or input error · `2` violations.
