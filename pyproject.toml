@@ -1,0 +1,30 @@
+# DRAFT — name and licence are placeholders pending Max's decision.
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "asdeclared"
+version = "0.1.0.dev0"
+description = "Config-driven, read-only guard against architecture drift: deployed bytes, transaction ownership, entrypoint parity, competing writers, migration ledger parity."
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Massimiliano Paragnani" }]
+keywords = ["architecture", "drift", "static-analysis", "migrations",
+            "deployment", "ast"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: Quality Assurance",
+]
+# The whole point: nothing here.
+dependencies = []
+
+[project.scripts]
+asdeclared = "asdeclared.cli:main"
+asdeclared-tracelink = "asdeclared.tracelink:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

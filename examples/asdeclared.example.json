@@ -1,0 +1,39 @@
+{
+  "_comment": "Synthetic example — every id carries a rationale, because six months from now the rationale is the only record of why the surface is guarded.",
+  "critical_files": [
+    {
+      "id": "cf-worker",
+      "path": "services/worker.py",
+      "rationale": "deployed stale once; only byte comparison caught it"
+    }
+  ],
+  "caller_transactional_modules": [
+    {
+      "id": "tx-writer",
+      "path": "services/writer.py",
+      "forbidden_connection_calls": ["psycopg2.connect", "_get_connection"],
+      "rationale": "receives the caller's transaction; an internal commit makes rollback tests attest a guarantee the code does not give"
+    }
+  ],
+  "paired_entrypoints": [
+    {
+      "id": "ep-ingest",
+      "caller_module": "services/ingest.py",
+      "primary_symbol": "run",
+      "retry_symbol": "retry",
+      "authoritative_callee": "parse_v2",
+      "rationale": "the retry path is exercised exactly when the primary failed; it must not bypass the migration the primary received"
+    }
+  ],
+  "authoritative_writers": [
+    {
+      "id": "aw-orders",
+      "table": "orders",
+      "declared_writers": ["services/order_writer.py"],
+      "rationale": "single-writer surface; a second writer is usually added by someone who did not find the first"
+    }
+  ],
+  "migration_directory": "migrations",
+  "migration_filename_pattern": "^\\d{3}_.*\\.sql$",
+  "migration_ledger_fields": {"filename": "filename", "digest": "sha256"}
+}
