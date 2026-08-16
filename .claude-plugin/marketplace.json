@@ -1,0 +1,23 @@
+{
+  "name": "asdeclared",
+  "owner": {
+    "name": "Massimiliano Paragnani",
+    "url": "https://aosol.cloud"
+  },
+  "metadata": {
+    "description": "asdeclared \u2014 is the system still as declared?",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "asdeclared",
+      "source": "./",
+      "description": "Config-driven, read-only guard against architecture drift: deployed bytes, transaction ownership, entrypoint parity, competing writers, migration ledger parity.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Massimiliano Paragnani",
+        "url": "https://aosol.cloud"
+      }
+    }
+  ]
+}

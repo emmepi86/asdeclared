@@ -1,0 +1,21 @@
+{
+  "name": "asdeclared",
+  "version": "0.1.0",
+  "description": "Config-driven, read-only guard against architecture drift: deployed bytes, transaction ownership, entrypoint parity, competing writers, migration ledger parity.",
+  "author": {
+    "name": "Massimiliano Paragnani",
+    "url": "https://aosol.cloud"
+  },
+  "license": "Apache-2.0",
+  "keywords": [
+    "architecture",
+    "drift",
+    "static-analysis",
+    "migrations",
+    "deployment",
+    "read-only"
+  ],
+  "displayName": "asdeclared",
+  "homepage": "https://github.com/emmepi86/asdeclared",
+  "repository": "https://github.com/emmepi86/asdeclared"
+}
