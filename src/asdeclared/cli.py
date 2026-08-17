@@ -262,7 +262,7 @@ def _string_literals(path: str):
     """Only the STRING LITERALS of a source file, with their start line.
 
     A real deployment flagged a file whose only "write" was the comment
-    ``# In production: INSERT INTO audit_logs`` — raw-text scanning reads
+    a comment naming an insert on an audit table -- raw-text scanning reads
     comments, and a comment writes nothing. The declared contract is
     "scan string literals": this does exactly that, via tokenize.
 

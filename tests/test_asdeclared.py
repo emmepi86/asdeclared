@@ -355,7 +355,7 @@ class TestShippedExample:
 
 
 class TestCommentsDoNotWrite:
-    """The real false positive: `# In production: INSERT INTO audit_logs`.
+    """The real false positive: a comment naming an insert on an audit table.
 
     A comment writes nothing. The scan reads STRING LITERALS via
     tokenize; unparsable files stay conservative on raw text.
