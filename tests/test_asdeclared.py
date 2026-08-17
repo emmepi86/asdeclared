@@ -352,3 +352,40 @@ class TestShippedExample:
             "services/reporting/export.py"
         assert by_id["migrations"]["digest_mismatch"] == ["001_init.sql"]
         assert by_id["migrations"]["repo_only"] == ["002_region.sql"]
+
+
+class TestCommentsDoNotWrite:
+    """The real false positive: `# In production: INSERT INTO audit_logs`.
+
+    A comment writes nothing. The scan reads STRING LITERALS via
+    tokenize; unparsable files stay conservative on raw text.
+    """
+
+    def _cfg(self):
+        return _config(authoritative_writers=[
+            {"id": "aw-t", "table": "orders_v1",
+             "declared_writers": ["owner.py"], "rationale": "t"}])
+
+    def test_a_comment_does_NOT_trigger(self, repo):
+        _write(repo / "owner.py", 'SQL = "INSERT INTO orders_v1 VALUES (1)"\n')
+        _write(repo / "innocent.py",
+               "def f():\n"
+               "    # In production: INSERT INTO orders_v1\n"
+               "    return None\n")
+        assert engine.check_competing_writers(
+            self._cfg(), str(repo))[0]["status"] == "pass"
+
+    def test_line_numbers_inside_multiline_strings_stay_exact(self, repo):
+        _write(repo / "owner.py", 'SQL = "INSERT INTO orders_v1 VALUES (1)"\n')
+        _write(repo / "multi.py",
+               'Q = """\n-- header\nDELETE FROM orders_v1 WHERE id=1\n"""\n')
+        r = engine.check_competing_writers(self._cfg(), str(repo))[0]
+        assert r["undeclared_writers"][0]["line"] == 3
+
+    def test_unparsable_files_stay_conservative(self, repo):
+        _write(repo / "owner.py", 'SQL = "INSERT INTO orders_v1 VALUES (1)"\n')
+        _write(repo / "broken.py",
+               "def broken(:\n"
+               "    x = 'INSERT INTO orders_v1 (id) VALUES (1)'\n")
+        assert engine.check_competing_writers(
+            self._cfg(), str(repo))[0]["status"] == "fail"

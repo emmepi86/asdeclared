@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.1
+
+- Writer discovery now scans string literals via `tokenize` instead of
+  raw text: a Python comment mentioning `INSERT INTO ...` no longer
+  counts as a write. Unparsable files stay conservative (whole text).
+  Found in production: a file flagged for a comment.
+
 ## 0.1.0
 
 - Five checks: deployed bytes, transaction ownership, entrypoint parity,

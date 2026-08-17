@@ -258,6 +258,34 @@ def _write_pattern(table: str) -> "re.Pattern":
         re.IGNORECASE)
 
 
+def _string_literals(path: str):
+    """Only the STRING LITERALS of a source file, with their start line.
+
+    A real deployment flagged a file whose only "write" was the comment
+    ``# In production: INSERT INTO audit_logs`` — raw-text scanning reads
+    comments, and a comment writes nothing. The declared contract is
+    "scan string literals": this does exactly that, via tokenize.
+
+    When a file cannot be tokenized we fall back to the WHOLE raw text:
+    on unparsable sources we stay conservative — one extra false
+    positive is worth more than one unseen write.
+    """
+    import io
+    import tokenize
+
+    with open(path, "r", encoding="utf-8", errors="replace") as fh:
+        text = fh.read()
+    try:
+        tokens = list(tokenize.generate_tokens(io.StringIO(text).readline))
+    except (tokenize.TokenError, SyntaxError, IndentationError, ValueError):
+        return [(text, 1)]
+    kinds = {tokenize.STRING}
+    fstring_middle = getattr(tokenize, "FSTRING_MIDDLE", None)
+    if fstring_middle is not None:
+        kinds.add(fstring_middle)
+    return [(t.string, t.start[0]) for t in tokens if t.type in kinds]
+
+
 def check_competing_writers(cfg: Dict, repo: str) -> List[Dict]:
     items = cfg.get("authoritative_writers", [])
     if not items:
@@ -267,16 +295,15 @@ def check_competing_writers(cfg: Dict, repo: str) -> List[Dict]:
 
     for rel in _python_files(repo):
         try:
-            with open(os.path.join(repo, rel), "r", encoding="utf-8",
-                      errors="replace") as fh:
-                text = fh.read()
+            chunks = _string_literals(os.path.join(repo, rel))
         except OSError:
             continue
         for table, pat in patterns.items():
-            for m in pat.finditer(text):
-                line = text.count("\n", 0, m.start()) + 1
-                found[table].append({"path": rel, "line": line,
-                                     "match": m.group(0)[:60]})
+            for text, base_line in chunks:
+                for m in pat.finditer(text):
+                    line = base_line + text.count("\n", 0, m.start())
+                    found[table].append({"path": rel, "line": line,
+                                         "match": m.group(0)[:60]})
 
     results = []
     for item in items:
